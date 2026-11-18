@@ -11,7 +11,7 @@ const A = window.Abflug;
 
 let failed = 0;
 // Feste Level plus eine Stichprobe der endlosen Level.
-const idx = [...A.LEVELS.keys(), 10, 11, 12, 13, 14, 19, 24, 39];
+const idx = [...A.LEVELS.keys(), 10, 11, 12, 13, 14, 19, 24, 39, 49, 99];
 idx.forEach(i => {
   const L = A.levelDef(i);
   try {
@@ -108,8 +108,11 @@ try {
 } catch (e) { failed++; console.log(`FAIL Nebel: ${e.message}`); }
 // Sturm-Level: jedes fünfte ab Level 5, als solche markiert.
 try {
-  assert.deepEqual([0, 1, 2, 3, 4, 9, 14].map(A.isStorm), [false, false, false, false, true, true, true]);
-  assert.equal(A.generate(4).storm, true);
+  assert.deepEqual([0, 1, 2, 3, 4, 9, 14, 19].map(A.isStorm), [false, false, false, false, false, true, true, false]);
+  assert.deepEqual([4, 19, 49, 99, 9].map(A.cupOf), ["pokal", "cl", "pokal", "cl", null]);
+  assert.equal(A.generate(9).storm, true);
+  assert.equal(A.generate(4).cup, "pokal");
+  assert.equal(A.generate(4).storm, false);
   assert.equal(A.generate(3).storm, false);
   console.log("ok  Sturm");
 } catch (e) { failed++; console.log(`FAIL Sturm: ${e.message}`); }
