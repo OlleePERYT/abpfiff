@@ -188,6 +188,17 @@ window.Abflug = (() => {
     { id: "FE", name: "Die Fohlenelf", color: "#0B5E33", color2: "#1A1A1A", text: "#FFFFFF" },
     { id: "BR", name: "Die Brustringträger", color: "#F4F4F0", color2: "#E3001B", text: "#C00018", light: true },
     { id: "DM", name: "Diva vom Main", color: "#22252B", color2: "#E3001B", text: "#FFFFFF" },
+    // Gäste der Königsklasse (nur Level 20 und 100)
+    { id: "KÖ", name: "Die Königlichen", color: "#F4F4F0", color2: "#C9A227", text: "#8A6A10", light: true },
+    { id: "BG", name: "Die Blaugrana", color: "#A50044", color2: "#004D98", text: "#FFFFFF" },
+    { id: "RD", name: "The Red Devils", color: "#DA291C", color2: "#1A1A1A", text: "#FFFFFF" },
+    { id: "PA", name: "Les Parisiens", color: "#0B1F4D", color2: "#DA291C", text: "#FFFFFF" },
+    { id: "CI", name: "The Citizens", color: "#6CABDD", color2: "#FFFFFF", text: "#0B2E4A" },
+    { id: "RE", name: "The Reds", color: "#C8102E", color2: "#F6EB61", text: "#FFFFFF" },
+    { id: "AD", name: "Die Alte Dame", color: "#1A1A1A", color2: "#FFFFFF", text: "#FFFFFF" },
+    { id: "BL", name: "The Blues", color: "#034694", color2: "#FFFFFF", text: "#FFFFFF" },
+    { id: "GU", name: "The Gunners", color: "#EF0107", color2: "#FFFFFF", text: "#FFFFFF" },
+    { id: "NE", name: "Die Nerazzurri", color: "#111111", color2: "#0068A8", text: "#FFFFFF" },
   ];
 
   function rng(seed) {
@@ -809,7 +820,7 @@ window.Abflug = (() => {
   const chalFor = i => CHALLENGES[i % CHALLENGES.length], chalReward = i => 40 + 5 * i;
   let chal = null, chalDone = store.get("abpfiff.chal", {});
   let tiers = store.get("abpfiff.tiers", {}), starsBy = store.get("abpfiff.stars", {}), towsUsed = 0;
-  let shells = store.get("abpfiff.shells", 0), owned = store.get("abpfiff.owned", []), decor = { awning: "heim", facade: "rot", floor: "beton", center: "rasen", ...store.get("abpfiff.decor", {}) }, placedAt = {};
+  let shells = store.get("abpfiff.shells", 0), owned = store.get("abpfiff.owned", []), decor = { awning: "heim", facade: "rot", floor: "beton", center: "rasen", kit: "heim", gk: "gruen", ...store.get("abpfiff.decor", {}) }, placedAt = {};
   let streak = store.get("abpfiff.streak", 0), pass = store.get("abpfiff.pass", {}), tows = 0, towArmed = false, newStamps = [];
   // Sticker je Team: bei etwa 1.000 Fans pro Level gibt es Bronze um Level 13, Silber um Level 34, Gold um Level 90.
   const STAMPS = [{ n: 1000, name: "Bronze" }, { n: 3000, name: "Silber" }, { n: 8000, name: "Gold" }];
@@ -1059,10 +1070,12 @@ window.Abflug = (() => {
         eyes(hy - r * 0.08, 0.36, 0.13); frown(hy + r * 0.35);
         break;
       }
-      case "BD": { // Dino: Zacken auf dem Kopf, Nasenlöcher
-        for (let k = -1; k <= 1; k++) tri("#2F7F86", [[cx + k * r * 0.45 - r * 0.22, hy - r * 0.8], [cx + k * r * 0.45 + r * 0.22, hy - r * 0.8], [cx + k * r * 0.45, hy - r * (k ? 1.25 : 1.45)]]);
-        disc("#4FA3A5");
-        disc("#3D8C8F", cx, hy + r * 0.38, r * 0.5);
+      case "GU":
+      case "BD": { // Dino: Zacken auf dem Kopf, Nasenlöcher (Gunners in Grün)
+        const dk = id === "GU" ? "#3E8E3A" : "#2F7F86", dl = id === "GU" ? "#5BAE4A" : "#4FA3A5", dm = id === "GU" ? "#4E9C40" : "#3D8C8F";
+        for (let k = -1; k <= 1; k++) tri(dk, [[cx + k * r * 0.45 - r * 0.22, hy - r * 0.8], [cx + k * r * 0.45 + r * 0.22, hy - r * 0.8], [cx + k * r * 0.45, hy - r * (k ? 1.25 : 1.45)]]);
+        disc(dl);
+        disc(dm, cx, hy + r * 0.38, r * 0.5);
         disc("#1F5559", cx - r * 0.14, hy + r * 0.25, r * 0.06); disc("#1F5559", cx + r * 0.14, hy + r * 0.25, r * 0.06);
         eyes(hy - r * 0.25, 0.38, 0.13); frown(hy + r * 0.48, 0.2, "#1F5559");
         break;
@@ -1106,6 +1119,7 @@ window.Abflug = (() => {
         eyes(hy - r * 0.15, 0.36, 0.12); frown(hy + r * 0.48, 0.16, "#2A1A10");
         break;
       }
+      case "RD":
       case "RT": { // Teufelchen: rote Haut, Hörnchen, spitze Brauen
         tri("#7A1A1A", [[cx - r * 0.65, hy - r * 0.55], [cx - r * 0.3, hy - r * 0.8], [cx - r * 0.75, hy - r * 1.35]]);
         tri("#7A1A1A", [[cx + r * 0.65, hy - r * 0.55], [cx + r * 0.3, hy - r * 0.8], [cx + r * 0.75, hy - r * 1.35]]);
@@ -1114,6 +1128,69 @@ window.Abflug = (() => {
         g.beginPath(); g.moveTo(cx - r * 0.6, hy - r * 0.45); g.lineTo(cx - r * 0.15, hy - r * 0.25); g.moveTo(cx + r * 0.6, hy - r * 0.45); g.lineTo(cx + r * 0.15, hy - r * 0.25); g.stroke();
         eyes(hy - r * 0.02, 0.34, 0.13); frown(hy + r * 0.35, 0.22, "#5A1414");
         tri("#5A1414", [[cx - r * 0.15, hy + r * 0.85], [cx + r * 0.15, hy + r * 0.85], [cx, hy + r * 1.25]]);
+        break;
+      }
+      case "KÖ": { // König: Gesicht, goldene Krone, Bart
+        disc("#F2D2B0");
+        g.fillStyle = "#C9A227"; g.beginPath(); g.moveTo(cx - r * 0.75, hy - r * 0.55);
+        [[-0.75, -1.3], [-0.38, -0.85], [0, -1.45], [0.38, -0.85], [0.75, -1.3], [0.75, -0.55]].forEach(([a, b]) => g.lineTo(cx + a * r, hy + b * r)); g.closePath(); g.fill();
+        disc("#E3001B", cx, hy - r * 1.0, r * 0.1);
+        g.fillStyle = "#8B6A4A"; g.beginPath(); g.arc(cx, hy + r * 0.35, r * 0.62, 0.1, Math.PI - 0.1); g.fill();
+        eyes(hy - r * 0.15, 0.34, 0.12); frown(hy + r * 0.25, 0.18);
+        break;
+      }
+      case "BG": case "PA": { // Wildkatze (gestreift) und Luchs (Ohrpinsel, Backenbart)
+        const fur = id === "BG" ? "#D9933F" : "#C9A77A";
+        tri(fur, [[cx - r * 0.85, hy - r * 0.35], [cx - r * 0.25, hy - r * 0.85], [cx - r * 0.75, hy - r * 1.35]]);
+        tri(fur, [[cx + r * 0.85, hy - r * 0.35], [cx + r * 0.25, hy - r * 0.85], [cx + r * 0.75, hy - r * 1.35]]);
+        if (id === "PA") { tri("#1A1A1A", [[cx - r * 0.8, hy - r * 1.3], [cx - r * 0.7, hy - r * 1.3], [cx - r * 0.78, hy - r * 1.7]]); tri("#1A1A1A", [[cx + r * 0.8, hy - r * 1.3], [cx + r * 0.7, hy - r * 1.3], [cx + r * 0.78, hy - r * 1.7]]);
+          tri("#E8DCC4", [[cx - r * 0.9, hy], [cx - r * 1.35, hy + r * 0.5], [cx - r * 0.6, hy + r * 0.7]]); tri("#E8DCC4", [[cx + r * 0.9, hy], [cx + r * 1.35, hy + r * 0.5], [cx + r * 0.6, hy + r * 0.7]]); }
+        disc(fur);
+        if (id === "BG") { g.strokeStyle = "#8B4A1E"; g.lineWidth = Math.max(0.8, r * 0.12); g.beginPath(); for (const k of [-0.3, 0, 0.3]) { g.moveTo(cx + k * r, hy - r * 0.95); g.lineTo(cx + k * r * 0.8, hy - r * 0.6); } g.stroke(); }
+        g.fillStyle = "#F4EDE0"; g.beginPath(); g.ellipse(cx, hy + r * 0.45, r * 0.45, r * 0.32, 0, 0, 7); g.fill();
+        tri("#E86A7A", [[cx - r * 0.1, hy + r * 0.22], [cx + r * 0.1, hy + r * 0.22], [cx, hy + r * 0.34]]);
+        eyes(hy - r * 0.12, 0.36, 0.13); frown(hy + r * 0.45, 0.14);
+        break;
+      }
+      case "CI": { // Außerirdischer: blasser grüner Kopf, große schwarze Mandelaugen, Antenne
+        g.strokeStyle = "#7FB89A"; g.lineWidth = Math.max(0.8, r * 0.12); g.beginPath(); g.moveTo(cx, hy - r * 0.9); g.lineTo(cx, hy - r * 1.4); g.stroke(); disc("#E3F7A0", cx, hy - r * 1.45, r * 0.16);
+        g.fillStyle = "#A8E6C0"; g.beginPath(); g.ellipse(cx, hy, r * 0.95, r * 1.05, 0, 0, 7); g.fill();
+        for (const sd of [-1, 1]) { g.fillStyle = "#1A1A1A"; g.beginPath(); g.ellipse(cx + sd * r * 0.38, hy - r * 0.05, r * 0.26, r * 0.4, sd * -0.5, 0, 7); g.fill(); disc("#FFFFFF", cx + sd * r * 0.32, hy - r * 0.2, r * 0.07); }
+        frown(hy + r * 0.48, 0.14, "#3E7A5A");
+        break;
+      }
+      case "RE": { // Vogel: dunkler Kopf, langer Hakenschnabel, kleiner Schopf
+        tri("#2E3B33", [[cx - r * 0.1, hy - r * 0.9], [cx + r * 0.2, hy - r * 0.9], [cx - r * 0.2, hy - r * 1.4]]);
+        disc("#3E4F45");
+        eyes(hy - r * 0.2, 0.34, 0.13);
+        g.fillStyle = "#E8B23A"; g.beginPath(); g.moveTo(cx - r * 0.18, hy + r * 0.05); g.lineTo(cx + r * 0.18, hy + r * 0.05); g.lineTo(cx + r * 0.08, hy + r * 0.85); g.quadraticCurveTo(cx - r * 0.05, hy + r * 0.95, cx - r * 0.1, hy + r * 0.75); g.closePath(); g.fill();
+        break;
+      }
+      case "AD": { // Zebra: weißer Kopf mit schwarzen Streifen, dunkles Maul, Mähne
+        tri("#F4F4F0", [[cx - r * 0.6, hy - r * 0.5], [cx - r * 0.25, hy - r * 0.8], [cx - r * 0.65, hy - r * 1.35]]);
+        tri("#F4F4F0", [[cx + r * 0.6, hy - r * 0.5], [cx + r * 0.25, hy - r * 0.8], [cx + r * 0.65, hy - r * 1.35]]);
+        disc("#F4F4F0");
+        g.save(); g.beginPath(); g.arc(cx, hy, r, 0, 7); g.clip(); g.fillStyle = "#1A1A1A";
+        for (const k of [-0.7, -0.35, 0.35, 0.7]) g.fillRect(cx + k * r - r * 0.07, hy - r, r * 0.14, r * 0.7);
+        g.restore();
+        g.fillStyle = "#1A1A1A"; g.beginPath(); g.ellipse(cx, hy - r * 0.95, r * 0.2, r * 0.32, 0, 0, 7); g.fill();
+        g.fillStyle = "#3A3A3A"; g.beginPath(); g.ellipse(cx, hy + r * 0.5, r * 0.5, r * 0.36, 0, 0, 7); g.fill();
+        eyes(hy - r * 0.1, 0.38, 0.13);
+        break;
+      }
+      case "BL": { // Löwe: Mähne rundherum, goldenes Gesicht
+        for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2; disc("#B5651D", cx + Math.cos(a) * r * 0.85, hy + Math.sin(a) * r * 0.85, r * 0.42); }
+        disc("#E8B04A", cx, hy, r * 0.82);
+        g.fillStyle = "#F4E0B0"; g.beginPath(); g.ellipse(cx, hy + r * 0.38, r * 0.38, r * 0.28, 0, 0, 7); g.fill();
+        disc("#5A3418", cx, hy + r * 0.22, r * 0.11);
+        eyes(hy - r * 0.15, 0.32, 0.12); frown(hy + r * 0.42, 0.14, "#5A3418");
+        break;
+      }
+      case "NE": { // Schlange: schmaler grüner Kopf, Schlitzaugen, gespaltene Zunge
+        g.fillStyle = "#4E9C40"; g.beginPath(); g.ellipse(cx, hy, r * 0.85, r * 1.0, 0, 0, 7); g.fill();
+        g.fillStyle = "#7CC46A"; g.beginPath(); g.ellipse(cx, hy + r * 0.3, r * 0.5, r * 0.55, 0, 0, 7); g.fill();
+        for (const sd of [-1, 1]) { disc("#F2E14C", cx + sd * r * 0.38, hy - r * 0.25, r * 0.17); g.fillStyle = "#1A1A1A"; g.fillRect(cx + sd * r * 0.38 - r * 0.03, hy - r * 0.4, r * 0.06, r * 0.3); }
+        g.strokeStyle = "#D84343"; g.lineWidth = Math.max(0.8, r * 0.08); g.beginPath(); g.moveTo(cx, hy + r * 0.75); g.lineTo(cx, hy + r * 1.1); g.lineTo(cx - r * 0.1, hy + r * 1.25); g.moveTo(cx, hy + r * 1.1); g.lineTo(cx + r * 0.1, hy + r * 1.25); g.stroke();
         break;
       }
       default: disc("#F6D2B0"); eyes(); frown();
@@ -1586,10 +1663,12 @@ window.Abflug = (() => {
     $("#towBtn").classList.toggle("armed", towArmed);
     $("#towBtn").setAttribute("aria-pressed", towArmed);
   }
+  // Königsklassen-Gäste kommen nur an zwei Abenden: ihre Sticker gibt es bei einem Zehntel der Fans.
+  const stampsFor = d => (d >= A.HOME_TEAMS ? STAMPS.map(s => ({ ...s, n: s.n / 10 })) : STAMPS);
   function addPass(d) {
     const id = A.DEST[d].id;
     pass[id] = (pass[id] || 0) + 1;
-    const tier = STAMPS.findIndex(s => s.n === pass[id]);
+    const tier = stampsFor(d).findIndex(s => s.n === pass[id]);
     if (tier < 0) return;
     newStamps.push({ d, tier });
     store.set("abpfiff.pass", pass);
@@ -1648,6 +1727,8 @@ window.Abflug = (() => {
     { key: "awning", name: "Tribüne", opts: [["heim", "Heimkurve", 0], ["choreo", "Choreo", 200], ["lichter", "Handylichter", 350], ["rauten", "Rauten-Choreo", 600], ["meister", "Meister-Choreo", 1000]] },
     { key: "facade", name: "Fassade am Kreisel", opts: [["rot", "Rot", 0], ["weiss", "Weiß", 400], ["funkeln", "Funkeln", 900]] },
     { key: "floor", name: "Boden im Stadion", opts: [["beton", "Beton", 0], ["pflaster", "Pflaster", 150], ["kunstrasen", "Kunstrasen", 300]] },
+    { key: "kit", name: "Trikot für Phonzie", opts: [["heim", "Heimtrikot", 0], ["1974", "1974", 500], ["1993", "1993", 700], ["1996", "1996", 900], ["1998", "1998", 1100], ["2010", "2010", 1300], ["2020", "2020", 1500]] },
+    { key: "gk", name: "Torwarttrikot für Manu", opts: [["gruen", "Grün", 0], ["grau", "Grau", 600], ["gelb", "Neongelb", 900], ["schwarz", "Schwarz", 1200], ["pink", "Pink", 1500]] },
     { key: "center", name: "Rasen im Kreisel", opts: [["rasen", "Rasen", 0], ["torwand", "Torwand", 300], ["schale", "Meisterschale", 900]] },
   ];
   const AWNINGS = { heim: ["#E3001B", "#FFFFFF", "#E3001B"], choreo: ["#E3001B", "#FFFFFF", "#FFD200", "#E3001B", "#1A1A1A"], lichter: ["#FFFDE7", "#3A4350", "#FFF59D", "#3A4350"],
@@ -2303,7 +2384,7 @@ window.Abflug = (() => {
   // Manu im Tor: grünes Torwarttrikot mit der 1, Kapitänsbinde, riesige Handschuhe. Beim Bremsen breitet er die Arme aus.
   function drawLotse(x, y, h, t, on) {
     const s = h / 110, jump = on ? Math.abs(Math.sin(t * 10)) * 6 : Math.abs(Math.sin(t * 2)) * 1.2;
-    const shirt = "#27B36A";
+    const shirt = GK[decor.gk] || GK.gruen;
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
     ctx.fillStyle = "rgba(20,26,32,.22)"; oval(ctx, 0, 0, 24, 5);
     ctx.translate(0, -jump);
@@ -2341,11 +2422,26 @@ window.Abflug = (() => {
     else { ctx.strokeStyle = "#7A2E2E"; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(0, -79, 4.5, 0.2, Math.PI - 0.2); ctx.stroke(); }
     ctx.restore();
   }
+  // Trikots: Klassiker nach dem Jahr, in dem sie getragen wurden, ohne Wappen und ohne Sponsor.
+  // An Flutlicht-Abenden gilt das Abend-Outfit: Schwarz in der Königsklasse, Weiß in der Pokalnacht.
+  const KITS = {
+    heim: { shirt: "#E3001B", trim: "#FFFFFF", num: "#FFFFFF", shorts: "#FFFFFF", socks: "#E3001B" },
+    1974: { shirt: "#D7141A", trim: "#FFFFFF", num: "#FFFFFF", shorts: "#FFFFFF", socks: "#D7141A", collar: "#FFFFFF" },
+    1993: { shirt: "#F2D300", trim: "#1E3F8F", num: "#1E3F8F", shorts: "#1E3F8F", socks: "#F2D300" },
+    1996: { shirt: "#C9CED4", trim: "#E3001B", num: "#14304A", shorts: "#C9CED4", socks: "#C9CED4" },
+    1998: { shirt: "#14244A", trim: "#E3001B", num: "#FFFFFF", shorts: "#14244A", socks: "#14244A", band: "#E3001B" },
+    2010: { shirt: "#1A1A1A", trim: "#E3001B", num: "#FFFFFF", shorts: "#1A1A1A", socks: "#1A1A1A" },
+    2020: { shirt: "#E3001B", trim: "#FFFFFF", num: "#FFFFFF", shorts: "#FFFFFF", socks: "#E3001B", pin: "#FFFFFF" },
+    nacht: { shirt: "#141414", trim: "#C9A227", num: "#C9A227", shorts: "#141414", socks: "#141414", band: "#2A2A2A" },
+    weiss: { shirt: "#F4F4F0", trim: "#E3001B", num: "#E3001B", shorts: "#F4F4F0", socks: "#F4F4F0" },
+  };
+  const GK = { gruen: "#27B36A", grau: "#8D969E", gelb: "#E6F03A", schwarz: "#2B3540", pink: "#E85FA5" };
+  const kitNow = () => (lv?.cup === "cl" ? KITS.nacht : lv?.cup === "pokal" ? KITS.weiss : KITS[decor.kit] || KITS.heim);
   // Phonzie: blitzschneller Außenverteidiger im roten Heimtrikot mit der 19, breites Lachen.
   // Beim Gasgeben sprintet er auf der Stelle, Speedlinien hinter ihm, Daumen hoch.
   function drawPilot(x, y, h, t, on) {
     const s = h / 110, run = on ? Math.sin(t * 20) : Math.sin(t * 2) * 0.08, bounce = on ? Math.abs(run) * 5 : Math.abs(Math.sin(t * 2)) * 1.2;
-    const skin = "#6B4226", red = "#E3001B";
+    const skin = "#6B4226", K = kitNow(), red = K.shirt;
     ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
     ctx.fillStyle = "rgba(20,26,32,.22)"; oval(ctx, 0, 0, 22, 5);
     if (on) {
@@ -2357,8 +2453,8 @@ window.Abflug = (() => {
     for (const [sd, ph] of [[-1, 1], [1, -1]]) {
       ctx.save(); ctx.translate(sd * 7, -36); ctx.rotate(run * 0.55 * ph);
       ctx.fillStyle = skin; rr(ctx, -4.5, 0, 9, 18, 4); ctx.fill();
-      ctx.fillStyle = red; rr(ctx, -5, 14, 10, 18, 4); ctx.fill();
-      ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-5, 16, 10, 2.5);
+      ctx.fillStyle = K.socks; rr(ctx, -5, 14, 10, 18, 4); ctx.fill();
+      ctx.fillStyle = K.trim; ctx.fillRect(-5, 16, 10, 2.5);
       ctx.fillStyle = "#1A1A1A"; oval(ctx, 2, 33, 7, 3.5);
       ctx.restore();
     }
@@ -2366,7 +2462,7 @@ window.Abflug = (() => {
       // Lederhose mit Hosenträgern
       ctx.fillStyle = "#7A5230"; rr(ctx, -15, -44, 30, 13, 4); ctx.fill();
       ctx.strokeStyle = "#5A3A20"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, -44); ctx.lineTo(0, -34); ctx.stroke();
-    } else { ctx.fillStyle = "#FFFFFF"; rr(ctx, -15, -44, 30, 12, 4); ctx.fill(); }
+    } else { ctx.fillStyle = K.shorts; rr(ctx, -15, -44, 30, 12, 4); ctx.fill(); if (lum(K.shorts) > 0.85) { ctx.strokeStyle = "rgba(0,0,0,.15)"; ctx.lineWidth = 1; ctx.stroke(); } }
     // Arme: Sprinterarme, beim Gasgeben ein Daumen hoch
     ctx.strokeStyle = red; ctx.lineWidth = 8; ctx.lineCap = "round"; ctx.lineJoin = "round";
     const la = on ? -0.9 + run * 0.8 : 0.4;
@@ -2378,7 +2474,12 @@ window.Abflug = (() => {
     if (on) ctx.fillRect(hx - 1.5, hy - 10, 3.5, 7);
     // Trikot mit weißen Ärmelstreifen und der 19
     ctx.fillStyle = red; rr(ctx, -18, -72, 36, 32, 11); ctx.fill();
-    ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-18, -66, 4, 9); ctx.fillRect(14, -66, 4, 9);
+    if (lum(red) > 0.85) { ctx.strokeStyle = "rgba(0,0,0,.18)"; ctx.lineWidth = 1; ctx.stroke(); }
+    if (K.band) { ctx.fillStyle = K.band; ctx.fillRect(-18, -64, 36, 6); }
+    if (K.pin) { ctx.fillStyle = K.pin; for (const x of [-12, -6, 6, 12]) ctx.fillRect(x - 0.6, -70, 1.2, 28); }
+    if (K.collar) { ctx.fillStyle = K.collar; ctx.beginPath(); ctx.moveTo(-7, -72); ctx.lineTo(7, -72); ctx.lineTo(0, -65); ctx.closePath(); ctx.fill(); }
+    ctx.fillStyle = K.trim; ctx.fillRect(-18, -66, 4, 9); ctx.fillRect(14, -66, 4, 9);
+    ctx.fillStyle = K.num;
     ctx.font = `800 13px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("19", 0, -54);
     if (has("lederhose")) { ctx.strokeStyle = "#7A5230"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-9, -44); ctx.lineTo(-7, -72); ctx.moveTo(9, -44); ctx.lineTo(7, -72); ctx.moveTo(-8, -60); ctx.lineTo(8, -60); ctx.stroke(); }
     // Kopf: kurze dunkle Haare, breites Lachen
@@ -2465,11 +2566,12 @@ window.Abflug = (() => {
   function showPass() {
     let got = 0;
     const rows = A.DEST.map((D, d) => {
-      const n = pass[D.id] || 0, tier = STAMPS.filter(s => n >= s.n).length, next = STAMPS[tier];
+      const ST = stampsFor(d), n = pass[D.id] || 0, tier = ST.filter(s => n >= s.n).length, next = ST[tier];
+      const head = d === 0 ? `<h3 style="margin:2px 0 0">Liga und Pokal</h3>` : d === A.HOME_TEAMS ? `<h3 style="margin:8px 0 0">Königsklasse</h3>` : "";
       got += tier;
-      if (!n) return `<div class="stamp locked"><span class="q">?</span><div><b>Noch unbekannt</b><small>Spiel weiter, um diese Fans zu treffen.</small></div></div>`;
-      const prev = tier ? STAMPS[tier - 1].n : 0, w = next ? Math.round(((n - prev) / (next.n - prev)) * 100) : 100;
-      return `<div class="stamp"><img src="${flagURL(d)}" alt=""><div><b>${D.name}<span class="stars" aria-label="${tier} von 3 Stickern">${"★".repeat(tier)}${"☆".repeat(3 - tier)}</span></b><small>${n} Fans heimgebracht${next ? ` · noch ${next.n - n} bis ${next.name}` : ` · ${STAMPS[2].name}`}</small><div class="bar"><span style="width:${w}%"></span></div></div></div>`;
+      if (!n) return head + `<div class="stamp locked"><span class="q">?</span><div><b>Noch unbekannt</b><small>Spiel weiter, um diese Fans zu treffen.</small></div></div>`;
+      const prev = tier ? ST[tier - 1].n : 0, w = next ? Math.round(((n - prev) / (next.n - prev)) * 100) : 100;
+      return head + `<div class="stamp"><img src="${flagURL(d)}" alt=""><div><b>${D.name}<span class="stars" aria-label="${tier} von 3 Stickern">${"★".repeat(tier)}${"☆".repeat(3 - tier)}</span></b><small>${n} Fans heimgebracht${next ? ` · noch ${next.n - n} bis ${next.name}` : ` · ${ST[2].name}`}</small><div class="bar"><span style="width:${w}%"></span></div></div></div>`;
     }).join("");
     showCard(`
       <div class="eyebrow">${got} von ${A.DEST.length * STAMPS.length} Stickern</div>
