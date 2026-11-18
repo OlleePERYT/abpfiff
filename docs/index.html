@@ -155,6 +155,7 @@ button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
     <button id="lvlBtn" class="board" aria-label="Level wählen"><span id="lvlNum" class="board-k">1</span><span id="lvlTxt" class="board-v">Erstes Spiel</span></button>
     <div class="hud-right">
       <button id="towBtn" class="chip tow" aria-label="Abschleppwagen benutzen" hidden><svg viewBox="0 0 22 16" fill="currentColor"><rect x="1" y="5" width="13" height="6" rx="2"/><rect x="8" y="1" width="6" height="5" rx="1.5"/><path d="M14 8h6v2h-6z"/><circle cx="4.5" cy="12.5" r="2.5"/><circle cx="11.5" cy="12.5" r="2.5"/></svg><span id="towN">1</span></button>
+      <button id="lookBtn" class="icon" aria-label="Optik umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><g id="lookDetail"><path d="M12 7v2M12 15v2M7 12h2M15 12h2"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></g></svg></button>
       <button id="passBtn" class="icon" aria-label="Fan-Album"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10.5" r="3"/><path d="M9 17h6"/></svg></button>
       <button id="restartBtn" class="icon" aria-label="Level neu starten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg></button>
       <button id="muteBtn" class="icon" aria-label="Ton aus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="muteWave" d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
@@ -2915,7 +2916,7 @@ window.Abflug = (() => {
       showMenu(tab);
     });
     $("#simpleBtn").addEventListener("click", () => {
-      simple = !simple; store.set("abpfiff.simple", simple);
+      setSimple(!simple);
       showMenu(tab);
     });
     $("#isleBtn").addEventListener("click", () => showShop());
@@ -2943,7 +2944,7 @@ window.Abflug = (() => {
       ${maxLevel ? `<p class="small">Oder spiele ein geschafftes Level noch einmal, um mehr Sterne zu holen:</p><div class="levels">${btns}</div>` : ""}
       <div class="actions"><button class="btn alt" id="isleBtn">Stadion ausbauen</button><div class="minis"><button class="mini" id="simpleBtn">Einfache Figuren: ${simple ? "an" : "aus"}<small>ruhiges Bild ohne Deko</small></button></div></div>`);
     hideHint();
-    $("#simpleBtn").addEventListener("click", () => { simple = !simple; store.set("abpfiff.simple", simple); showStart(); });
+    $("#simpleBtn").addEventListener("click", () => { setSimple(!simple); showStart(); });
     $("#goBtn").addEventListener("click", () => startLevel(maxLevel));
     $("#isleBtn").addEventListener("click", () => showShop());
     $("#card").querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startLevel(+b.dataset.l)));
@@ -2968,6 +2969,15 @@ window.Abflug = (() => {
     if (towArmed) showHint("<b>Abschleppwagen bereit.</b> Tippe einen zugeparkten Bus an. Er zieht ihn direkt in eine Busbucht.", 0); else hideHint();
   });
   $("#passBtn").addEventListener("click", () => { if ($("#overlay").hidden) showPass(); });
+  // Optik-Schalter in der Kopfzeile: detailliert oder einfach, ohne Umweg über das Menü.
+  function syncLook() {
+    $("#lookDetail").style.opacity = simple ? 0 : 1;
+    const txt = simple ? "Optik: einfach. Antippen für detailliert" : "Optik: detailliert. Antippen für einfach";
+    $("#lookBtn").setAttribute("aria-label", txt); $("#lookBtn").title = txt;
+  }
+  function setSimple(on) { simple = on; store.set("abpfiff.simple", simple); syncLook(); }
+  $("#lookBtn").addEventListener("click", () => { setSimple(!simple); toast(simple ? "Optik: einfach" : "Optik: detailliert"); });
+  syncLook();
   function syncMute() { $("#muteWave").style.opacity = muted ? 0 : 1; $("#muteBtn").setAttribute("aria-label", muted ? "Ton an" : "Ton aus"); }
   $("#muteBtn").addEventListener("click", () => { muted = !muted; store.set("abpfiff.muted", muted); syncMute(); if (muted) musicStop(); audioInit(); });
 
