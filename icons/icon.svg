@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#3E9B4F"/>
+  <g fill="#46A858"><rect x="0" width="64" height="512"/><rect x="128" width="64" height="512"/><rect x="256" width="64" height="512"/><rect x="384" width="64" height="512"/></g>
+  <!-- Bus von vorn schräg: rot-weiß, mit Ball -->
+  <rect x="96" y="150" width="320" height="250" rx="44" fill="#FFFFFF"/>
+  <rect x="104" y="158" width="304" height="234" rx="38" fill="#E3001B"/>
+  <rect x="104" y="300" width="304" height="40" fill="#FFFFFF"/>
+  <rect x="136" y="186" width="240" height="96" rx="18" fill="#1E3A4A"/>
+  <rect x="150" y="196" width="40" height="70" rx="10" fill="#FFFFFF" opacity=".35"/>
+  <circle cx="160" cy="364" r="18" fill="#FFD54F"/><circle cx="352" cy="364" r="18" fill="#FFD54F"/>
+  <rect x="140" y="400" width="56" height="34" rx="10" fill="#232C36"/><rect x="316" y="400" width="56" height="34" rx="10" fill="#232C36"/>
+  <circle cx="400" cy="140" r="62" fill="#FFFFFF" stroke="#232C36" stroke-width="10"/>
+  <polygon points="400,112 427,131 417,163 383,163 373,131" fill="#232C36"/>
+</svg>
