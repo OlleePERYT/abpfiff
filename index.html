@@ -871,17 +871,22 @@ window.Abflug = (() => {
   // ---------- Busse von oben ----------
   // Dach in der Hauptfarbe, breites Band in der Zweitfarbe, dunkle Frontscheibe vorn zeigt die Fahrtrichtung.
   // Länge 2: Kleinbus, 3: Reisebus, 4: Gelenkbus mit Faltenbalg in der Mitte.
+  // Bus von oben: abgerundete Front mit großer Panoramascheibe und gelben Scheinwerfern, eckiges Heck mit roten
+  // Rücklichtern, Pfeil auf dem Dachband. So sieht man auf einen Blick, wohin der Bus fährt.
   function paintPlane(g, len, c, body, flat, band) {
-    const half = len * c * 0.46, hw = c * 0.34, r = c * 0.13;
+    const half = len * c * 0.46, hw = c * 0.34, r = c * 0.1, rf = hw * 0.8;
     const fill = st => { g.fillStyle = flat ? (flat === true ? "#000" : flat) : st; g.fill(); };
     const dark = shade(body, -0.38);
     // Außenspiegel vorn
-    if (!simple) for (const sd of [-1, 1]) { rr(g, half - c * 0.26, sd > 0 ? hw - c * 0.02 : -hw - c * 0.08, c * 0.08, c * 0.1, c * 0.03); fill("#2B3540"); }
-    rr(g, -half, -hw, half * 2, hw * 2, r); fill(body);
+    if (!simple) for (const sd of [-1, 1]) { rr(g, half - c * 0.3, sd > 0 ? hw - c * 0.02 : -hw - c * 0.08, c * 0.08, c * 0.1, c * 0.03); fill("#2B3540"); }
+    g.beginPath();
+    g.moveTo(-half + r, -hw); g.lineTo(half - rf, -hw); g.arcTo(half, -hw, half, 0, rf); g.arcTo(half, hw, half - rf, hw, rf);
+    g.lineTo(-half + r, hw); g.arcTo(-half, hw, -half, hw - r, r); g.lineTo(-half, -hw + r); g.arcTo(-half, -hw, -half + r, -hw, r); g.closePath();
+    fill(body);
     if (flat) return;
     g.lineWidth = Math.max(1.2, c * 0.04); g.strokeStyle = dark; g.stroke();
     // Band in der Zweitfarbe über die ganze Länge
-    rr(g, -half + c * 0.12, -hw * 0.42, half * 2 - c * 0.4, hw * 0.84, hw * 0.2);
+    rr(g, -half + c * 0.12, -hw * 0.42, half * 2 - c * 0.5, hw * 0.84, hw * 0.2);
     g.fillStyle = band; g.fill();
     if (lum(band) > 0.8 && lum(body) > 0.8) { g.lineWidth = Math.max(1, c * 0.025); g.strokeStyle = "rgba(0,0,0,.18)"; g.stroke(); }
     if (len === 4) {
@@ -889,13 +894,22 @@ window.Abflug = (() => {
       g.fillStyle = "#2B3540"; g.fillRect(-c * 0.08, -hw, c * 0.16, hw * 2);
       g.fillStyle = "rgba(255,255,255,.35)"; for (const k of [-1, 0, 1]) g.fillRect(k * c * 0.05 - c * 0.008, -hw, c * 0.016, hw * 2);
     }
-    // Frontscheibe
-    g.fillStyle = "#1E3A4A"; rr(g, half - c * 0.2, -hw * 0.84, c * 0.15, hw * 1.68, c * 0.05); g.fill();
+    // Pfeil auf dem Band, kurz vor der Front
+    const ax = half - c * 0.42, ah = hw * 0.3;
+    g.strokeStyle = lum(band) > 0.55 ? "rgba(26,26,26,.85)" : "rgba(255,255,255,.95)"; g.lineWidth = Math.max(1.4, c * 0.07); g.lineCap = "round"; g.lineJoin = "round";
+    g.beginPath(); g.moveTo(ax - ah * 0.8, -ah); g.lineTo(ax, 0); g.lineTo(ax - ah * 0.8, ah); g.stroke();
+    // Große Panoramascheibe, der Rundung der Front folgend
+    g.fillStyle = "#1E3A4A"; g.beginPath();
+    g.moveTo(half - c * 0.3, -hw * 0.86); g.quadraticCurveTo(half - c * 0.04, -hw * 0.86, half - c * 0.06, 0); g.quadraticCurveTo(half - c * 0.04, hw * 0.86, half - c * 0.3, hw * 0.86);
+    g.quadraticCurveTo(half - c * 0.22, 0, half - c * 0.3, -hw * 0.86); g.fill();
+    // Scheinwerfer vorn, Rücklichter hinten
+    g.fillStyle = "#FFE45C"; for (const sd of [-1, 1]) { g.beginPath(); g.ellipse(half - c * 0.07, sd * hw * 0.78, c * 0.05, c * 0.07, 0, 0, 7); g.fill(); }
+    g.fillStyle = "#E53935"; for (const sd of [-1, 1]) g.fillRect(-half + c * 0.01, sd > 0 ? hw * 0.55 : -hw * 0.85, c * 0.05, hw * 0.3);
     if (simple) return;
-    g.fillStyle = "rgba(255,255,255,.35)"; rr(g, half - c * 0.17, -hw * 0.7, c * 0.04, hw * 0.6, c * 0.02); g.fill();
+    g.fillStyle = "rgba(255,255,255,.35)"; rr(g, half - c * 0.24, -hw * 0.66, c * 0.05, hw * 0.5, c * 0.02); g.fill();
     // Heck mit Lüftungsgitter, Glanzkante am Dach
-    g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(-half + c * 0.03, -hw * 0.55, c * 0.05, hw * 1.1);
-    g.fillStyle = "rgba(255,255,255,.22)"; rr(g, -half + c * 0.1, -hw * 0.88, half * 2 - c * 0.4, hw * 0.16, hw * 0.08); g.fill();
+    g.fillStyle = "rgba(0,0,0,.28)"; g.fillRect(-half + c * 0.07, -hw * 0.4, c * 0.04, hw * 0.8);
+    g.fillStyle = "rgba(255,255,255,.22)"; rr(g, -half + c * 0.1, -hw * 0.88, half * 2 - c * 0.5, hw * 0.16, hw * 0.08); g.fill();
   }
   function planeSprite(len, dest, mystery, c) {
     const key = `p${len}:${dest}:${mystery ? 1 : 0}:${c}:${simple ? 1 : 0}`;
