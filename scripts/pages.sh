@@ -23,5 +23,6 @@ version=$(cat index.html pwa/sw.js pwa/manifest.webmanifest | sha256sum | cut -c
 sed "s/__VERSION__/$version/" pwa/sw.js > docs/sw.js
 cp pwa/manifest.webmanifest docs/
 cp icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png docs/icons/
+mkdir -p docs/fonts && cp fonts/*.woff2 fonts/OFL-*.txt docs/fonts/
 touch docs/.nojekyll
 echo "docs/ gebaut, Version $version"

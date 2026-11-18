@@ -2,7 +2,7 @@
 // ankommen, und ohne Netz aus dem Cache. Icons und Schriften kommen zuerst aus dem Cache.
 // scripts/pages.sh setzt bei jedem Bau eine neue Versionsmarke ein, alte Caches werden dann gelöscht.
 const CACHE = "abpfiff-__VERSION__";
-const CORE = ["./", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
+const CORE = ["./", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./fonts/baloo2-latin.woff2", "./fonts/baloo2-latin-ext.woff2", "./fonts/nunito-latin.woff2", "./fonts/nunito-latin-ext.woff2"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
@@ -22,7 +22,7 @@ self.addEventListener("fetch", e => {
     return;
   }
   const url = new URL(req.url);
-  if (url.origin !== location.origin && !/(^|\.)(gstatic|googleapis)\.com$/.test(url.hostname)) return;
+  if (url.origin !== location.origin) return;
   e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
     if (res.ok || res.type === "opaque") { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
     return res;
